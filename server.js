@@ -6,6 +6,12 @@
 const express = require("express");
 const app = express();
 
+var ffi = require('ffi');
+
+var lib = ffi.Library('go', {
+	  'Add': [ 'long', [ 'long', 'long' ] ]
+});
+
 // our default array of dreams
 const dreams = [
   "Find and count some sheep",
@@ -30,5 +36,9 @@ app.get("/dreams", (request, response) => {
 
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
+  console.log('JavaScript says: about to call Go ..');
+  var total = lib.Add(39, 3);
+  console.log('JavaScript says: result is ' + total);
   console.log("Your app is listening on port " + listener.address().port);
+
 });
